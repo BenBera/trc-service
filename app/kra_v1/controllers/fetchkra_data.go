@@ -10,6 +10,7 @@ import (
 
 // fetchKraData fetches KRA data based on the provided URL environment variable
 func (a *Api)fetchKraData() (*KraTaxData, error) {
+	
 	// Retrieve the KRA data URL from environment variable
 	url := os.Getenv("MAYBETS_KRA_DATA_URL")
 	if url == "" {
