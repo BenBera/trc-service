@@ -24,7 +24,6 @@ type Api struct {
 	Config *ini.File
 	//E echo server
 	E *echo.Echo
-
 }
 
 func (a *Api) Status(c echo.Context) error {

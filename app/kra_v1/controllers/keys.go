@@ -1,36 +1,23 @@
 package controllers
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
+
+	"fmt"
 	"strings"
 
 	"gopkg.in/ini.v1"
 )
 
-func calculateSHA256(input string) string {
-	// Convert the input string to a byte slice
-	data := []byte(input)
 
-	hash := sha256.New()
-
-	hash.Write(data)
-
-	hashSum := hash.Sum(nil)
-
-	hashHex := hex.EncodeToString(hashSum)
-
-	return hashHex
-}
-
-
-
-func GetKey(config *ini.File,section string, key string) (string,error)  {
-
-	return  strings.TrimSpace(config.Section(section).Key(key).String()),nil
-
-}
-
+func GetKey(config *ini.File, section string, key string) (string, error) {
+	sectionObj := config.Section(section)
+	if sectionObj == nil {
+	  return "", fmt.Errorf("section '%s' not found in configuration file", section)
+	}
+	value := sectionObj.Key(key).String()
+	return strings.TrimSpace(value), nil
+  }
+  
 
 func GetKeyWithDefault(config *ini.File,section string, key string, defaults string) string  {
 

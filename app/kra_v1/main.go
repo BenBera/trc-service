@@ -31,10 +31,11 @@ func main() {
 	// Initialize your API instance
 	api := &controllers.Api{
 		E: e,
+		DB:database.DbInstance() ,
 	}
 
 	// api.SetupRoutes(e)
-	controllers.SetupRoutes(api.E, api)
+	controllers.SetupRoutes(api.E, api, db)
 
 	// Start the server
 	port := ":8085"
