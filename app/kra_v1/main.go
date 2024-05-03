@@ -30,8 +30,7 @@ func main() {
 
 	// Initialize your API instance
 	api := &controllers.Api{
-		E: e,
-		DB:database.DbInstance() ,
+		E: e,		
 	}
 
 	// api.SetupRoutes(e)

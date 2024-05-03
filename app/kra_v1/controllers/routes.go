@@ -11,7 +11,7 @@ import (
 )
 
 func SetupRoutes(e *echo.Echo, a *Api, db *sql.DB) {
-
+	
 	// init webserver
 	a.E = echo.New()
 	
@@ -59,20 +59,16 @@ func SetupRoutes(e *echo.Echo, a *Api, db *sql.DB) {
 
 	//all routes
 	e.POST("/status", a.Status)
-	e.POST("/version", a.Version)
+	e.POST("/version", a.Version)	
 
-	e.POST("/kqra-dash-data", func(c echo.Context) error {
-		// Call a.GetKqraDashData with the necessary parameters
+	e.POST("/kra-dash-data", func(c echo.Context) error {
 		err := a.GetKqraDashData(c, db, a.RedisConnection)
 		if err != nil {
-			// Handle error if needed
 			return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 				"error": "Failed to process request",
 			})
 		}
-	
-		// Return success response if no error occurred
-		return c.JSON(http.StatusOK, map[string]interface{}{
+			return c.JSON(http.StatusOK, map[string]interface{}{
 			"message": "Request processed successfully",
 		})
 	})

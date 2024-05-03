@@ -119,7 +119,7 @@ func validateKraData(data *KraTaxData) {
  func insertKraData(db *sql.DB, data *KraTaxData) error {
     // Prepare the SQL INSERT statement
     query := `
-        INSERT INTO kra_data (
+        INSERT INTO kra_datadashdata (
             total_bets,
             total_stake,
             excise_duty_unpaid
