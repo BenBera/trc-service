@@ -5,14 +5,16 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
+	// "os"
 )
 
 // fetchKraData fetches KRA data based on the provided URL environment variable
 func (a *Api)fetchKraData() (*KraTaxData, error) {
 	
 	// Retrieve the KRA data URL from environment variable
-	url := os.Getenv("MAYBETS_KRA_DATA_URL")
+	//url := os.Getenv("MAYBETS_KRA_DATA_URL")
+	url := "https://api.maybets.com/kra-data"
+
 	if url == "" {
 		return nil, fmt.Errorf("MAYBETS_KRA_DATA_URL environment variable is not set")
 	}

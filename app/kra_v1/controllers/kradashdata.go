@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/go-redis/redis"
 	"github.com/labstack/echo/v4"
@@ -30,15 +31,15 @@ func (a *Api) GetKqraDashData(c echo.Context, db *sql.DB, redisCon *redis.Client
         })
     }
 
-	validateKraData(data)
 
-    // // Validate fetched data
-	// if err := validateKraData(data); err != nil {
-	// 	log.Printf("Failed to validate KRA data: %v", err)
-	// 	return c.JSON(http.StatusBadRequest, map[string]interface{}{
-	// 		"error": fmt.Sprintf("Validation error: %v", err),
-	// 	})
-	// }
+    // Validate fetched data
+	if err := validateKraData(data); err != nil {
+		log.Printf("Failed to validate KRA data: %v", err)
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"error": fmt.Sprintf("Validation error: %v", err),
+		})
+	}
+
     // Store validated data in the database
     if err := insertKraData(db, data); err != nil {
         log.Printf("Failed to insert KRA data into database: %v", err)
@@ -56,66 +57,69 @@ func (a *Api) GetKqraDashData(c echo.Context, db *sql.DB, redisCon *redis.Client
 
 
 // validateKraData validates the fetched KRA data
-func validateKraData(data *KraTaxData) {
-	// Check if data is nil
+func validateKraData(data *KraTaxData) error {
 	if data == nil {
-		fmt.Println("KRA data is nil")
-		return
+		return fmt.Errorf("validation error: KRA data is nil")
 	}
 
-	// Validate specific fields in the KraTaxData struct
+	var errs []string
+
 	if data.TotalBets <= 0 {
-		fmt.Println("Invalid total bets: must be greater than zero, setting to zero")
 		data.TotalBets = 0
+		errs = append(errs, "Invalid total bets: must be greater than zero")
 	}
 
 	if data.TotalStake <= 0 {
-		fmt.Println("Invalid total stake: must be greater than zero, setting to zero")
 		data.TotalStake = 0
+		errs = append(errs, "Invalid total stake: must be greater than zero")
 	}
 
 	if data.ExciseDutyUnpaid < 0 {
-		fmt.Println("Invalid excise duty unpaid: must be non-negative, setting to zero")
 		data.ExciseDutyUnpaid = 0
+		errs = append(errs, "Invalid excise duty unpaid: must be non-negative")
 	}
 
 	if data.ExciseDutyPaid < 0 {
-		fmt.Println("Invalid excise duty paid: must be non-negative, setting to zero")
 		data.ExciseDutyPaid = 0
+		errs = append(errs, "Invalid excise duty paid: must be non-negative")
 	}
 
 	if data.ExciseDutyStake < 0 {
-		fmt.Println("Invalid excise duty stake: must be non-negative, setting to zero")
 		data.ExciseDutyStake = 0
+		errs = append(errs, "Invalid excise duty stake: must be non-negative")
 	}
 
 	if data.TotalWinnings < 0 {
-		fmt.Println("Invalid total winnings: must be non-negative, setting to zero")
 		data.TotalWinnings = 0
+		errs = append(errs, "Invalid total winnings: must be non-negative")
 	}
 
 	if data.TotalWinningBets < 0 {
-		fmt.Println("Invalid total winning bets: must be non-negative, setting to zero")
 		data.TotalWinningBets = 0
+		errs = append(errs, "Invalid total winning bets: must be non-negative")
 	}
 
 	if data.WHTOnWinning < 0 {
-		fmt.Println("Invalid WHT on winning: must be non-negative, setting to zero")
 		data.WHTOnWinning = 0
+		errs = append(errs, "Invalid WHT on winning: must be non-negative")
 	}
 
 	if data.WHTPaid < 0 {
-		fmt.Println("Invalid WHT paid: must be non-negative, setting to zero")
 		data.WHTPaid = 0
+		errs = append(errs, "Invalid WHT paid: must be non-negative")
 	}
 
 	if data.WHTUnpaid < 0 {
-		fmt.Println("Invalid WHT unpaid: must be non-negative, setting to zero")
 		data.WHTUnpaid = 0
+		errs = append(errs, "Invalid WHT unpaid: must be non-negative")
 	}
+
+	if len(errs) > 0 {
+		return fmt.Errorf("validation error(s):\n%s", strings.Join(errs, "\n"))
+	}
+
+	return nil
 }
-
-
  func insertKraData(db *sql.DB, data *KraTaxData) error {
     // Prepare the SQL INSERT statement
     query := `
