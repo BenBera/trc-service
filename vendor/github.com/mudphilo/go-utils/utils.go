@@ -1,11 +1,11 @@
 package library
 
 import (
-	"context"
 	"crypto/tls"
 	"errors"
 	"fmt"
 	"github.com/jinzhu/now"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"log"
 	"math"
 	"net"
@@ -500,27 +500,6 @@ func NewNetClient() *http.Client {
 			Dial: (&net.Dialer{
 				Timeout: 60 * time.Second,
 			}).Dial,
-			TLSClientConfig:     &tls.Config{InsecureSkipVerify: true},
-			TLSHandshakeTimeout: 60 * time.Second,
-		}
-
-		netClient = &http.Client{
-			Timeout:   time.Second * 60,
-			Transport: netTransport,
-		}
-	})
-
-	return netClient
-}
-
-func NewNetClientWithContext(ctx context.Context) *http.Client {
-
-	once.Do(func() {
-
-		var netTransport = &http.Transport{
-			Dial: (&net.Dialer{
-				Timeout: 60 * time.Second,
-			}).Dial,
 			DialContext: (&net.Dialer{
 				Timeout: 60 * time.Second,
 			}).DialContext,
@@ -528,9 +507,10 @@ func NewNetClientWithContext(ctx context.Context) *http.Client {
 			TLSHandshakeTimeout: 60 * time.Second,
 		}
 
+
 		netClient = &http.Client{
 			Timeout:   time.Second * 60,
-			Transport: netTransport,
+			Transport: otelhttp.NewTransport(netTransport),
 		}
 	})
 

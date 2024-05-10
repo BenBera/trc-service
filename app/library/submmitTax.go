@@ -20,11 +20,17 @@ func SubmitOutcomeToKRA(db *sql.DB, redisConn *redis.Client, data models.Outcome
 	status := data.Status
 	outcome := data.Outcome
 	dateOfOutcome := data.Outcomedate
-	payout := data.Payout
+	// payout := data.Payout
 	winnings := data.Winnings
-	winning_tax := data.WithholdingTax
+	// winning_tax := data.WithholdingTax
 
 	//get the bet details from bet ID
+	winning_tax, err := strconv.ParseInt(data.Winnings, 10, 64)
+	payout, err := strconv.ParseInt(data.Payout, 10, 64)
+
+
+
+
 	var bets []models.OutcomeDetail
 	if status == 1 {
 		outcome = "LOSE"
@@ -35,6 +41,9 @@ func SubmitOutcomeToKRA(db *sql.DB, redisConn *redis.Client, data models.Outcome
 	} else {
 		outcome = ""
 	}
+
+	//Strings conversion to floats
+
 	// Set them to the model
 	outcomeInfo := models.OutcomeInfo{
 		BetID:          data.BetID,

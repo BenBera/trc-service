@@ -26,6 +26,7 @@ const (
 	prefixError = "%s\n%s"
 )
 
+
 // randomInsert randomly inserts the given value into the given string.
 func RandomInsert(s, val string) (string, error) {
 	if s == "" {

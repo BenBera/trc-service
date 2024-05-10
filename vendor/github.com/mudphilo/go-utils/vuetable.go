@@ -56,11 +56,28 @@ func GetVueTableData(db *sql.DB, paginator models.Paginator) models.Pagination {
 
 	if len(search.Sort) > 0 {
 
-		sortPrams := strings.Split(search.Sort, "|")
+		parts := strings.Split(search.Sort, ",")
 
-		column := sortPrams[0]
-		direction := sortPrams[1]
-		orderBy = fmt.Sprintf("ORDER BY %s %s ", column, direction)
+		var orders []string
+
+		for _, p := range parts {
+
+			sortPrams := strings.Split(p, "|")
+
+			if len(sortPrams) == 2 {
+
+				column := sortPrams[0]
+				direction := sortPrams[1]
+				orders = append(orders,fmt.Sprintf("%s %s ", column, direction))
+			}
+
+		}
+
+		if len(orders) > 0 {
+
+			orderBy = fmt.Sprintf("ORDER BY %s ",strings.Join(orders,","))
+
+		}
 	}
 
 	// count query
@@ -202,11 +219,28 @@ func GetVueTableDataWithContext(ctx context.Context, db *sql.DB, paginator model
 
 	if len(search.Sort) > 0 {
 
-		sortPrams := strings.Split(search.Sort, "|")
+		parts := strings.Split(search.Sort, ",")
 
-		column := sortPrams[0]
-		direction := sortPrams[1]
-		orderBy = fmt.Sprintf("ORDER BY %s %s ", column, direction)
+		var orders []string
+
+		for _, p := range parts {
+
+			sortPrams := strings.Split(p, "|")
+
+			if len(sortPrams) == 2 {
+
+				column := sortPrams[0]
+				direction := sortPrams[1]
+				orders = append(orders,fmt.Sprintf("%s %s ", column, direction))
+			}
+
+		}
+
+		if len(orders) > 0 {
+
+			orderBy = fmt.Sprintf("ORDER BY %s ",strings.Join(orders,","))
+
+		}
 	}
 
 	// count query
@@ -352,11 +386,28 @@ func DownloadVueTableData(db *sql.DB, paginator models.Paginator) (rowData []int
 
 	if len(search.Sort) > 0 {
 
-		sortPrams := strings.Split(search.Sort, "|")
+		parts := strings.Split(search.Sort, ",")
 
-		column := sortPrams[0]
-		direction := sortPrams[1]
-		orderBy = fmt.Sprintf("ORDER BY %s %s ", column, direction)
+		var orders []string
+
+		for _, p := range parts {
+
+			sortPrams := strings.Split(p, "|")
+
+			if len(sortPrams) == 2 {
+
+				column := sortPrams[0]
+				direction := sortPrams[1]
+				orders = append(orders,fmt.Sprintf("%s %s ", column, direction))
+			}
+
+		}
+
+		if len(orders) > 0 {
+
+			orderBy = fmt.Sprintf("ORDER BY %s ",strings.Join(orders,","))
+
+		}
 	}
 
 	hardLimit,_ := strconv.ParseInt(os.Getenv("HARD_SQL_FETCH_LIMIT"),10,64)
@@ -480,11 +531,28 @@ func DownloadVueTableDataWithContext(ctx context.Context, db *sql.DB, paginator 
 
 	if len(search.Sort) > 0 {
 
-		sortPrams := strings.Split(search.Sort, "|")
+		parts := strings.Split(search.Sort, ",")
 
-		column := sortPrams[0]
-		direction := sortPrams[1]
-		orderBy = fmt.Sprintf("ORDER BY %s %s ", column, direction)
+		var orders []string
+
+		for _, p := range parts {
+
+			sortPrams := strings.Split(p, "|")
+
+			if len(sortPrams) == 2 {
+
+				column := sortPrams[0]
+				direction := sortPrams[1]
+				orders = append(orders,fmt.Sprintf("%s %s ", column, direction))
+			}
+
+		}
+
+		if len(orders) > 0 {
+
+			orderBy = fmt.Sprintf("ORDER BY %s ",strings.Join(orders,","))
+
+		}
 	}
 
 	hardLimit,_ := strconv.ParseInt(os.Getenv("HARD_SQL_FETCH_LIMIT"),10,64)

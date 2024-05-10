@@ -123,7 +123,7 @@ func validateKraData(data *KraTaxData) error {
  func insertKraData(db *sql.DB, data *KraTaxData) error {
     // Prepare the SQL INSERT statement
     query := `
-        INSERT INTO kra_datadashdata (
+        INSERT INTO kra_tax_data (
             total_bets,
             total_stake,
             excise_duty_unpaid
@@ -154,6 +154,8 @@ func validateKraData(data *KraTaxData) error {
     if err != nil {
         return fmt.Errorf("failed to insert KRA data into database: %v", err)
     }
+
+	
 
     return nil
 }
